@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qu2u.moments.mapper.TagsMapper">
+
+    <resultMap id="BaseResultMap" type="com.qu2u.moments.entity.Tags">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="color" column="color" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,name,color
+    </sql>
+
+    <select id="selectMomentsTagsList" resultType="com.qu2u.moments.entity.Tags">
+        SELECT t.name, t.color,t.text_color
+        FROM moments_tags mt
+                 LEFT JOIN tags t on mt.tags_id = t.id
+        WHERE mt.moments_id = #{momentsId}
+    </select>
+
+</mapper>

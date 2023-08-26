@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qu2u.moments.mapper.MomentsMapper">
+
+    <resultMap id="BaseResultMap" type="com.qu2u.moments.entity.Moments">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="start" column="start" jdbcType="INTEGER"/>
+            <result property="isTop" column="is_top" jdbcType="INTEGER"/>
+            <result property="isPublish" column="is_publish" jdbcType="INTEGER"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,content,
+        start,is_top,is_publish,
+        is_delete,update_time,create_time
+    </sql>
+
+    <select id="selectMomentsList" resultType="com.qu2u.moments.vo.MomentsVO">
+        SELECT m.id AS moment_id,
+               m.title,
+               m.content,
+               m.start,
+               m.is_top,
+               m.is_publish,
+               m.is_delete,
+               m.update_time,
+               m.create_time,
+               GROUP_CONCAT(t.name) AS tags
+        FROM moments m
+                 LEFT JOIN
+             moments_tags mt ON m.id = mt.moments_id
+                 LEFT JOIN
+             tags t ON mt.tags_id = t.id
+        GROUP BY m.id;
+    </select>
+
+</mapper>
