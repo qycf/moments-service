@@ -32,7 +32,7 @@ public class MomentsServiceImpl extends ServiceImpl<MomentsMapper, Moments>
     private TagsMapper tagsMapper;
 
     @Override
-    public PageResult<MomentsVO> selectMomentsList(boolean isLogin, int page, int size) {
+    public PageResult<Moments> selectMomentsList(boolean isLogin, int page, int size) {
         List<Moments> momentsList = new ArrayList<>();
         IPage<Moments> momentsPage = new Page<>(page, size);
         if (!isLogin) {
@@ -42,16 +42,8 @@ public class MomentsServiceImpl extends ServiceImpl<MomentsMapper, Moments>
             momentsList = this.list(momentsPage);
         }
         List<MomentsVO> momentsVOList = new ArrayList<>();
-//        遍历momentsList
-        for (Moments moments : momentsList) {
-            List<Tags> tags = tagsMapper.selectMomentsTagsList(moments.getId());
-            MomentsVO momentsVO = new MomentsVO();
-            BeanUtil.copyProperties(moments, momentsVO);
-            momentsVO.setTags(tags);
-            momentsVOList.add(momentsVO);
-        }
 
-        PageResult<MomentsVO> momentsVOPageResult = new PageResult<>(momentsVOList, momentsPage.getTotal(), momentsPage.getCurrent(), momentsPage.getSize(), momentsPage.getPages());
+        PageResult<Moments> momentsVOPageResult = new PageResult<>(momentsList, momentsPage.getTotal(), momentsPage.getCurrent(), momentsPage.getSize(), momentsPage.getPages());
         return momentsVOPageResult;
     }
 }

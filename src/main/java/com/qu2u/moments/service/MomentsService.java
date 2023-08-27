@@ -14,6 +14,6 @@ import java.util.List;
 */
 public interface MomentsService extends IService<Moments> {
 
-    PageResult<MomentsVO> selectMomentsList(boolean isLogin, int page, int size);
+    PageResult<Moments> selectMomentsList(boolean isLogin, int page, int size);
 
 }

@@ -1,10 +1,9 @@
 package com.qu2u.moments.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -27,6 +26,12 @@ public class Moments implements Serializable {
      * 标题
      */
     private String title;
+
+    /**
+     * 标签
+     */
+
+    private String tags;
 
     /**
      * 内容
@@ -57,13 +62,15 @@ public class Moments implements Serializable {
      * 更新时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date updateTime;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime updateTime;
 
     /**
      * 发布时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date createTime;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
