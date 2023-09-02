@@ -1,9 +1,9 @@
 package com.qu2u.moments.service;
 
+import com.qu2u.moments.domain.MomentsVO;
 import com.qu2u.moments.domain.PageResult;
 import com.qu2u.moments.entity.Moments;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.qu2u.moments.vo.MomentsVO;
 
 import java.util.List;
 
@@ -14,6 +14,6 @@ import java.util.List;
 */
 public interface MomentsService extends IService<Moments> {
 
-    PageResult<Moments> selectMomentsList(boolean isLogin, int page, int size);
+    PageResult<MomentsVO> selectMomentsList(boolean isLogin, int page, int size);
 
 }

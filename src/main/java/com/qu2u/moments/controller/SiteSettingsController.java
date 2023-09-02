@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("/siteConfig")
-public class SiteConfigController {
+@RequestMapping("/siteSettings")
+public class SiteSettingsController {
 
     @Resource
     private SiteConfigService siteConfigService;
 
-    @GetMapping("")
+    @GetMapping()
     public Response<SiteConfig> getSiteConfig() {
         SiteConfig siteConfig = siteConfigService.getById(1);
         return Response.success(siteConfig);

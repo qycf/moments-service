@@ -22,23 +22,7 @@
         is_delete,update_time,create_time
     </sql>
 
-    <select id="selectMomentsList" resultType="com.qu2u.moments.vo.MomentsVO">
-        SELECT m.id AS moment_id,
-               m.title,
-               m.content,
-               m.start,
-               m.is_top,
-               m.is_publish,
-               m.is_delete,
-               m.update_time,
-               m.create_time,
-               GROUP_CONCAT(t.name) AS tags
-        FROM moments m
-                 LEFT JOIN
-             moments_tags mt ON m.id = mt.moments_id
-                 LEFT JOIN
-             tags t ON mt.tags_id = t.id
-        GROUP BY m.id;
-    </select>
+
+
 
 </mapper>

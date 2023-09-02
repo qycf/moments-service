@@ -5,18 +5,21 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.qu2u.moments.domain.MomentsVO;
 import com.qu2u.moments.domain.PageResult;
+import com.qu2u.moments.entity.Images;
 import com.qu2u.moments.entity.Moments;
-import com.qu2u.moments.entity.Tags;
-import com.qu2u.moments.mapper.TagsMapper;
+import com.qu2u.moments.service.ImagesService;
 import com.qu2u.moments.service.MomentsService;
 import com.qu2u.moments.mapper.MomentsMapper;
-import com.qu2u.moments.vo.MomentsVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author qiuyue
@@ -27,25 +30,45 @@ import java.util.List;
 public class MomentsServiceImpl extends ServiceImpl<MomentsMapper, Moments>
         implements MomentsService {
 
-
     @Resource
-    private TagsMapper tagsMapper;
+    private ImagesService imagesService;
+
 
     @Override
-    public PageResult<Moments> selectMomentsList(boolean isLogin, int page, int size) {
+    public PageResult<MomentsVO> selectMomentsList(boolean isLogin, int page, int size) {
         List<Moments> momentsList = new ArrayList<>();
         IPage<Moments> momentsPage = new Page<>(page, size);
+
         if (!isLogin) {
             LambdaQueryWrapper<Moments> isPublish = new LambdaQueryWrapper<Moments>().eq(Moments::getIsPublish, 1);
             momentsList = this.list(momentsPage, isPublish);
         } else {
             momentsList = this.list(momentsPage);
         }
-        List<MomentsVO> momentsVOList = new ArrayList<>();
 
-        PageResult<Moments> momentsVOPageResult = new PageResult<>(momentsList, momentsPage.getTotal(), momentsPage.getCurrent(), momentsPage.getSize(), momentsPage.getPages());
+        List<MomentsVO> momentsVOList = momentsList.stream()
+                .map(moments -> {
+                    MomentsVO momentsVO = new MomentsVO();
+                    BeanUtil.copyProperties(moments, momentsVO, "images");
+                    String images_ids_str = moments.getImages();
+                    if (images_ids_str == null || images_ids_str.equals("")) {
+                        return momentsVO;
+                    }
+
+                    List<String> images_ids = Arrays.asList(images_ids_str.split(","));
+                    List<Integer> result = images_ids.stream().map(Integer::parseInt).collect(Collectors.toList());
+                    List<Images> imagesList = imagesService.listByIds(result);
+                    momentsVO.setImages(imagesList);
+
+                    return momentsVO;
+                })
+                .collect(Collectors.toList());
+
+
+        PageResult<MomentsVO> momentsVOPageResult = new PageResult<>(momentsVOList, momentsPage.getTotal(), momentsPage.getCurrent(), momentsPage.getSize(), momentsPage.getPages());
         return momentsVOPageResult;
     }
+
 }
 
 

@@ -13,7 +13,6 @@ import java.util.List;
  */
 public interface MomentsMapper extends BaseMapper<Moments> {
 
-    List<Object> selectMomentsList();
 
 }
 
