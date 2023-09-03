@@ -2,16 +2,19 @@ server:
   port: 9000
 
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
   #  autoconfigure:
-#    exclude: org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration
+  #    exclude: org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration
   # 数据源配置
   datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    driver-class-name: com.mysql.cj.jdbc.Driver
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
     url: jdbc:p6spy:mysql://localhost:3306/moments?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
     username: root
@@ -78,3 +81,6 @@ sa-token:
   #是否打印彩色日志，true=打印彩色日志，false=打印黑白日志，null=框架根据运行终端自行判断是否打印彩色日志
   isColorLog: true
 
+springfox:
+  documentation:
+    enabled: true
