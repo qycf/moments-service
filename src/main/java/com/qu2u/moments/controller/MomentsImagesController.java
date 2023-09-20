@@ -1,6 +1,7 @@
 package com.qu2u.moments.controller;
 
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.qu2u.moments.domain.Response;
 import com.qu2u.moments.entity.Images;
 import com.qu2u.moments.service.ImagesService;
@@ -21,6 +22,7 @@ public class MomentsImagesController {
     private ImagesService imagesService;
 
     @PostMapping(value = "/image" )
+    @SaCheckLogin
     public Response<List<Images>> uploadImage(@RequestPart("files") MultipartFile[] files){
 //        List<Images> images = imagesService.uploadImages(files);
         for (MultipartFile file : files) {

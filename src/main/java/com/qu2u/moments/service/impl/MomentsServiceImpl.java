@@ -1,5 +1,6 @@
 package com.qu2u.moments.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -39,11 +40,31 @@ public class MomentsServiceImpl extends ServiceImpl<MomentsMapper, Moments>
         List<Moments> momentsList = new ArrayList<>();
         IPage<Moments> momentsPage = new Page<>(page, size);
 
+        LambdaQueryWrapper<Moments> momentWrapper = new LambdaQueryWrapper<Moments>();
+        momentWrapper.eq(Moments::getIsTop, 0)
+                .orderByDesc(Moments::getUpdateTime);
+
         if (!isLogin) {
-            LambdaQueryWrapper<Moments> isPublish = new LambdaQueryWrapper<Moments>().eq(Moments::getIsPublish, 1);
-            momentsList = this.list(momentsPage, isPublish);
-        } else {
-            momentsList = this.list(momentsPage);
+            momentWrapper.eq(Moments::getIsPublish, 1);
+        }
+        momentsList = this.list(momentsPage, momentWrapper);
+        System.out.println("momentsList:" + momentsList);
+        if (page == 1) {
+            LambdaQueryWrapper<Moments> topMomentWrapper = new LambdaQueryWrapper<Moments>();
+            topMomentWrapper
+                    .eq(Moments::getIsTop, 1)
+                    .orderByDesc(Moments::getUpdateTime)
+            ;
+            if (!isLogin) {
+                topMomentWrapper.eq(Moments::getIsPublish, 1);
+            }
+            List<Moments> topMoments = this.list(topMomentWrapper);
+
+            if (momentsList.isEmpty()) {
+                momentsList = topMoments;
+            } else {
+                momentsList.addAll(topMoments);
+            }
         }
 
         List<MomentsVO> momentsVOList = momentsList.stream()
@@ -51,7 +72,7 @@ public class MomentsServiceImpl extends ServiceImpl<MomentsMapper, Moments>
                     MomentsVO momentsVO = new MomentsVO();
                     BeanUtil.copyProperties(moments, momentsVO, "images");
                     String images_ids_str = moments.getImages();
-                    if (images_ids_str == null || images_ids_str.equals("")) {
+                    if (images_ids_str == null || images_ids_str.isEmpty()) {
                         return momentsVO;
                     }
 
@@ -65,8 +86,7 @@ public class MomentsServiceImpl extends ServiceImpl<MomentsMapper, Moments>
                 .collect(Collectors.toList());
 
 
-        PageResult<MomentsVO> momentsVOPageResult = new PageResult<>(momentsVOList, momentsPage.getTotal(), momentsPage.getCurrent(), momentsPage.getSize(), momentsPage.getPages());
-        return momentsVOPageResult;
+        return new PageResult<>(momentsVOList, momentsPage.getTotal(), momentsPage.getCurrent(), momentsPage.getSize(), momentsPage.getPages());
     }
 
 }
