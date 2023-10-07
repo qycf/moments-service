@@ -48,7 +48,6 @@ public class MomentsServiceImpl extends ServiceImpl<MomentsMapper, Moments>
             momentWrapper.eq(Moments::getIsPublish, 1);
         }
         momentsList = this.list(momentsPage, momentWrapper);
-        System.out.println("momentsList:" + momentsList);
         if (page == 1) {
             LambdaQueryWrapper<Moments> topMomentWrapper = new LambdaQueryWrapper<Moments>();
             topMomentWrapper
@@ -63,7 +62,7 @@ public class MomentsServiceImpl extends ServiceImpl<MomentsMapper, Moments>
             if (momentsList.isEmpty()) {
                 momentsList = topMoments;
             } else {
-                momentsList.addAll(topMoments);
+                momentsList.addAll(0,topMoments);
             }
         }
 
@@ -84,7 +83,6 @@ public class MomentsServiceImpl extends ServiceImpl<MomentsMapper, Moments>
                     return momentsVO;
                 })
                 .collect(Collectors.toList());
-
 
         return new PageResult<>(momentsVOList, momentsPage.getTotal(), momentsPage.getCurrent(), momentsPage.getSize(), momentsPage.getPages());
     }
